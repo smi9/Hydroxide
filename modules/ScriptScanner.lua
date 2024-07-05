@@ -12,7 +12,7 @@ local requiredMethods = {
 
 local function scan(query)
     local scripts = {}
-    query = query or ""
+    --[[query = query or ""
 
     for _i, v in pairs(getGc()) do
         if type(v) == "function" and not isXClosure(v) then
@@ -28,7 +28,7 @@ local function scan(query)
                 scripts[script] = LocalScript.new(script)
             end
         end
-    end
+    end]]
 
     return scripts
 end
