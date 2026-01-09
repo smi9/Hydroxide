@@ -110,6 +110,9 @@ local function checkPermission(instance)
 end
 
 for _name, hook in pairs(methodHooks) do
+    if (_name == "UnreliableRemoteEvent") then
+        _name = "RemoteEvent";
+    end;
     local originalMethod
     originalMethod = hookFunction(hook, newCClosure(function(...)
         local instance = ...
