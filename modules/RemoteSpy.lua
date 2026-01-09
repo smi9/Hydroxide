@@ -30,6 +30,7 @@ local remotesViewing = {
 
 local methodHooks = {
     RemoteEvent = Instance.new("RemoteEvent").FireServer,
+    UnreliableRemoteEvent = Instance.new("UnreliableRemoteEvent").FireServer,
     RemoteFunction = Instance.new("RemoteFunction").InvokeServer,
     BindableEvent = Instance.new("BindableEvent").Fire,
     BindableFunction = Instance.new("BindableFunction").Invoke
@@ -63,8 +64,11 @@ nmcTrampoline = hookMetaMethod(game, "__namecall", function(...)
     elseif method == "invokeServer" then
         method = "InvokeServer"
     end
-        
-    if remotesViewing[instance.ClassName] and instance ~= remoteDataEvent and remoteMethods[method] then
+    local remoteClassName = instance.ClassName;
+    if (remoteClassName == "UnreliableRemoteEvent") then
+        remoteClassName = "RemoteEvent";
+    end;    
+    if remotesViewing[remoteClassName] and instance ~= remoteDataEvent and remoteMethods[method] then
         local remote = currentRemotes[instance]
         local vargs = {select(2, ...)}
             
@@ -118,8 +122,11 @@ for _name, hook in pairs(methodHooks) do
             local success = pcall(checkPermission, instance)
             if (not success) then return originalMethod(...) end
         end
-
-        if instance.ClassName == _name and remotesViewing[instance.ClassName] and instance ~= remoteDataEvent then
+        local remoteClassName = instance.ClassName;
+        if (remoteClassName == "UnreliableRemoteEvent") then
+            remoteClassName = "RemoteEvent";
+        end;
+        if remoteClassName == _name and remotesViewing[remoteClassName] and instance ~= remoteDataEvent then
             local remote = currentRemotes[instance]
             local vargs = {select(2, ...)}
 
